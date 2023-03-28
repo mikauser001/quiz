@@ -23,6 +23,14 @@ class Quiz(models.Model):
             [p["points"] for p in questions.objects.values_list(points)]
         )
 
+    def get_board(self):
+        """Return the current quiz rankings& points"""
+        return self.participants.filter(id_mod=False).values_list("username", "points", "rank")
+
+    def finished(self):
+        # todo
+
+
 class Question(models.Model):
 
     headline = models.CharField()
@@ -42,11 +50,11 @@ class Answer(models.Model):
 
         if self.char_body != question.answer:
             self.user.points -= self.question.points
-            self.state = "Leider falsch. - {self.question.points} Punkte"
+            self.state = f"Leider falsch. - {self.question.points} Punkte"
 
         else:
             self.user.points += self.question.points
-            self.state = "Richtig. + {self.question.points} Punkte"
+            self.state = f"Richtig. + {self.question.points} Punkte"
 
         self.user.save(update_fields=["points"])
         self.save(update_fields=["state"])

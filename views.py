@@ -64,6 +64,16 @@ def quiz_view(request, pk):
     quiz = Quiz.objects.get(pk=pk)
     return render(request, "quiz.html", {"quiz": quiz})
 
+def quiz_result_view(request, pk):
+    quiz = Quiz.objects.get(pk=pk)
+    ctx = {}
 
+    if quiz.finished():
+        ctx["results"] = quiz.get_board()
+    else:
+        ctx["results"] = None
+    
+    return render(request, "quiz_results.html", ctx)
+    
 def quiz_list_view(request):
-    return render(request, "quiz_list,html", {"quiz_list": Quiz.objects.all()})
+    return render(request, "quiz_list.html", {"quiz_list": Quiz.objects.all()})
