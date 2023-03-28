@@ -4,6 +4,7 @@ from django import models
 class User(AbstractUser):
     points = models.IntegerField()
     rank = models.IntegerField()
+    is_mod = models.BooleanField(default=False)
 
     def reset(self):
         self.points, self.rank = None
@@ -34,5 +35,18 @@ class Question(models.Model):
 class Answer(models.Model):
     char_body = models.TextField()
     user = models.ForeignKey(on_delete=models.CASCADE)
-    question = models.ForeignKey(on_delete=models.CASCADE)
-    
+    question = models.ForeignKey(on_delete=models.CASCADE, related_name="r_answer")
+    state = models.CharField(null=true, blank=True)
+
+    def review(self):
+
+        if self.char_body != question.answer:
+            self.user.points -= self.question.points
+            self.state = "Leider falsch. - {self.question.points} Punkte"
+
+        else:
+            self.user.points += self.question.points
+            self.state = "Richtig. + {self.question.points} Punkte"
+
+        self.user.save(update_fields=["points"])
+        self.save(update_fields=["state"])
