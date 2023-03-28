@@ -29,3 +29,10 @@ class Question(models.Model):
     image_body = models.ImageField(null=True, blank=True)
     points = models.PositiveIntegerField()
     answer = models.TextField()
+
+
+class Answer(models.Model):
+    char_body = models.TextField()
+    user = models.ForeignKey(on_delete=models.CASCADE)
+    question = models.ForeignKey(on_delete=models.CASCADE)
+    
